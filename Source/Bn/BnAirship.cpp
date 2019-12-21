@@ -13,9 +13,10 @@ ABnAirship::ABnAirship()
 	HullMesh->SetupAttachment(GetRootComponent());
 
 	MainBalloonMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MainBalloonMesh"));
-	MainBalloonMesh->SetupAttachment(GetRootComponent());
+	MainBalloonMesh->SetupAttachment(HullMesh);
 	
 	MainBalloon = CreateDefaultSubobject<UBnBuoyancy>(TEXT("MainBalloon"));
+	MainBalloon->SetupAttachment(GetRootComponent());
 }
 
 // Called when the game starts or when spawned

@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Components/SceneComponent.h"
 #include "BnBuoyancy.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent, IsBlueprintBase = true) )
-class BN_API UBnBuoyancy : public UActorComponent
+class BN_API UBnBuoyancy : public USceneComponent
 {
 	GENERATED_BODY()
 
