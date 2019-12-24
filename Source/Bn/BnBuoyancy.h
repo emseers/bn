@@ -35,4 +35,7 @@ public:
 
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Burn(float BurnTemp);
+
+	UFUNCTION(Server, Reliable)
+	void TimerTick();
 };

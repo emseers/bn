@@ -2,6 +2,7 @@
 
 
 #include "BnAirship.h"
+#include "TimerManager.h"
 
 // Sets default values
 ABnAirship::ABnAirship()
@@ -23,7 +24,7 @@ ABnAirship::ABnAirship()
 void ABnAirship::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	GetWorldTimerManager().SetTimer(TimerTickHandle, this, &ABnAirship::TimerTick, 1.0f, true, -1);
 }
 
 // Called every frame
@@ -31,6 +32,11 @@ void ABnAirship::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ABnAirship::TimerTick_Implementation()
+{
+	MainBalloon->TimerTick();
 }
 
 // Called to bind functionality to input

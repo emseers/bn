@@ -29,9 +29,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Visual")
 	UStaticMeshComponent* MainBalloonMesh;
 
+	FTimerHandle TimerTickHandle;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION(Server, Reliable)
+	void TimerTick();
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

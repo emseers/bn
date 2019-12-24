@@ -31,6 +31,16 @@ void UBnBuoyancy::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 	// ...
 }
 
+void UBnBuoyancy::TimerTick_Implementation()
+{
+	const float NewTemp = CurrentTemp - COOLDOWN_RATE;
+
+	if(NewTemp >= MIN_TEMP)
+	{
+		CurrentTemp = NewTemp;
+	}
+}
+
 void UBnBuoyancy::Burn_Implementation(const float BurnTemp)
 {
 	const float NewTemp = CurrentTemp + BurnTemp;
