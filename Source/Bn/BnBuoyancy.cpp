@@ -2,6 +2,7 @@
 
 
 #include "BnBuoyancy.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
 UBnBuoyancy::UBnBuoyancy()
@@ -10,6 +11,7 @@ UBnBuoyancy::UBnBuoyancy()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	// ...
+	SetIsReplicatedByDefault(true);
 }
 
 
@@ -29,6 +31,12 @@ void UBnBuoyancy::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UBnBuoyancy::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UBnBuoyancy, CurrentTemp);
 }
 
 void UBnBuoyancy::TimerTick_Implementation()

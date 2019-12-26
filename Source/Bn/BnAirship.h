@@ -20,7 +20,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay", Replicated)
 	UBnBuoyancy* MainBalloon;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Visual")
@@ -41,4 +41,5 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

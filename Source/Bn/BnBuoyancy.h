@@ -26,7 +26,7 @@ protected:
 	float MIN_TEMP = 20.0f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay")
 	float COOLDOWN_RATE = 0.5f;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay", Replicated)
 	float CurrentTemp = MIN_TEMP;
 
 public:	
@@ -38,4 +38,6 @@ public:
 
 	UFUNCTION(Server, Reliable)
 	void TimerTick();
+
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

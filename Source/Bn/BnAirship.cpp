@@ -3,6 +3,7 @@
 
 #include "BnAirship.h"
 #include "TimerManager.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ABnAirship::ABnAirship()
@@ -18,13 +19,19 @@ ABnAirship::ABnAirship()
 	
 	MainBalloon = CreateDefaultSubobject<UBnBuoyancy>(TEXT("MainBalloon"));
 	MainBalloon->SetupAttachment(GetRootComponent());
+
+	bReplicates = true;
 }
 
 // Called when the game starts or when spawned
 void ABnAirship::BeginPlay()
 {
 	Super::BeginPlay();
-	GetWorldTimerManager().SetTimer(TimerTickHandle, this, &ABnAirship::TimerTick, 1.0f, true, -1);
+
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		GetWorldTimerManager().SetTimer(TimerTickHandle, this, &ABnAirship::TimerTick, 1.0f, true, -1);
+	}
 }
 
 // Called every frame
@@ -44,5 +51,11 @@ void ABnAirship::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void ABnAirship::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ABnAirship, MainBalloon);
 }
 
