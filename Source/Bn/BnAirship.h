@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "BnBuoyancy.h"
+#include "BnFloatMovement.h"
 #include "BnAirship.generated.h"
 
 UCLASS()
@@ -22,6 +23,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay", Replicated)
 	UBnBuoyancy* MainBalloon;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay", Replicated)
+	UBnFloatMovement* Movement;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Visual")
 	UStaticMeshComponent* HullMesh;
