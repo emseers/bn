@@ -28,7 +28,13 @@ void UBnFloatMovement::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	DesiredRotation.Roll = 0.0f;
 	NewRotation = DesiredRotation.Quaternion();
 
-	MoveUpdatedComponent(MoveDelta, NewRotation, true);
+	FHitResult Hit;
+	SafeMoveUpdatedComponent(MoveDelta, NewRotation, true, Hit);
+
+	if (Hit.IsValidBlockingHit())
+	{
+		SlideAlongSurface(MoveDelta, 1.f - Hit.Time, Hit.Normal, Hit);
+	}
 
 	PendingForce = FVector::ZeroVector;
 }
@@ -83,7 +89,7 @@ FVector UBnFloatMovement::LimitVelocity(FVector NewVelocity) const
 		NewVelocity = NewVelocity.GetClampedToMaxSize(CurrentMaxSpeed);
 	}
 
-	return ConstrainDirectionToPlane(NewVelocity);
+	return NewVelocity;
 }
 
 void UBnFloatMovement::AddForce(const FVector Force)

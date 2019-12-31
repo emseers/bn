@@ -12,6 +12,7 @@
 UCLASS()
 class BN_API UBnFloatMovement : public UPawnMovementComponent
 {
+	GENERATED_BODY()
 public:
 	void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	inline bool IsFlying() const override;
@@ -22,7 +23,6 @@ public:
 	void SetMass(float NewMass);
 
 private:
-	GENERATED_BODY()
 	FVector ComputeMoveDelta(const FVector& InVelocity, float DeltaTime) const;
 	FVector ComputeVelocity(FVector InitialVelocity, float DeltaTime) const;
 	FVector ComputeAcceleration(const FVector& InVelocity, float DeltaTime) const;

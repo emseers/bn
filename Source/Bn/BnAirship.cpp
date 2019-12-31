@@ -20,8 +20,8 @@ ABnAirship::ABnAirship()
 	MainBalloon = CreateDefaultSubobject<UBnBuoyancy>(TEXT("MainBalloon"));
 	MainBalloon->SetupAttachment(GetRootComponent());
 
-	Movement = CreateDefaultSubobject<UBnFloatMovement>(TEXT("Movement"));
-	Movement->SetUpdatedComponent(RootComponent);
+	Movement = CreateDefaultSubobject<UBnFloatMovement>(TEXT("FloatMovement"));
+	Movement->SetUpdatedComponent(GetRootComponent());
 	Movement->SetMass(Mass);
 	
 	bReplicates = true;
