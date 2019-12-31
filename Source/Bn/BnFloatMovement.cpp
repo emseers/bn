@@ -86,8 +86,16 @@ FVector UBnFloatMovement::LimitVelocity(FVector NewVelocity) const
 	return ConstrainDirectionToPlane(NewVelocity);
 }
 
-void UBnFloatMovement::AddForce(FVector Force)
+void UBnFloatMovement::AddForce(const FVector Force)
 {
 	PendingForce += Force;
+}
+
+void UBnFloatMovement::SetMass(const float NewMass)
+{
+	if(NewMass > 0.f)
+	{
+		Mass = NewMass;
+	}
 }
 

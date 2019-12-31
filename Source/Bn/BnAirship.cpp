@@ -22,6 +22,7 @@ ABnAirship::ABnAirship()
 
 	Movement = CreateDefaultSubobject<UBnFloatMovement>(TEXT("Movement"));
 	Movement->SetUpdatedComponent(RootComponent);
+	Movement->SetMass(Mass);
 	
 	bReplicates = true;
 }
@@ -41,7 +42,7 @@ void ABnAirship::BeginPlay()
 void ABnAirship::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	Movement->AddForce(FVector(0, 0, MainBalloon->GetForces()));
 }
 
 void ABnAirship::TimerTick_Implementation()

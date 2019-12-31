@@ -28,6 +28,8 @@ protected:
 	float COOLDOWN_RATE = 0.5f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay", Replicated)
 	float CurrentTemp = MIN_TEMP;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay")
+	float MAX_BUOYANCY = 100.0f;
 
 public:	
 	// Called every frame
@@ -38,6 +40,9 @@ public:
 
 	UFUNCTION(Server, Reliable)
 	void TimerTick();
+
+	UFUNCTION()
+	float GetForces() const;
 
 	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

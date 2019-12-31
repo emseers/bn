@@ -21,11 +21,15 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	// TODO: Replace with more generic solution to allow arbitrary # balloon + subtypes of BnBuoyancy
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay", Replicated)
 	UBnBuoyancy* MainBalloon;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay", Replicated)
 	UBnFloatMovement* Movement;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay")
+	float Mass = 1000.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Visual")
 	UStaticMeshComponent* HullMesh;

@@ -16,7 +16,10 @@ public:
 	void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	inline bool IsFlying() const override;
 	// Add forces to centre of mass, for translational movement etc.. (off axis thrust etc.. is not included here)
+	UFUNCTION(BlueprintCallable)
 	void AddForce(FVector Force);
+	UFUNCTION(BlueprintCallable)
+	void SetMass(float NewMass);
 
 private:
 	GENERATED_BODY()
@@ -27,4 +30,6 @@ private:
 
 	// Pending force for next tick.
 	FVector PendingForce;
+
+	float Mass;
 };

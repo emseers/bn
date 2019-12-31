@@ -33,6 +33,11 @@ void UBnBuoyancy::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 	// ...
 }
 
+float UBnBuoyancy::GetForces() const
+{
+	return MAX_BUOYANCY * (CurrentTemp / MAX_TEMP);
+}
+
 void UBnBuoyancy::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
