@@ -1,6 +1,8 @@
 // Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
 
 #include "BnCharacter.h"
+
+#include "BnInteractive.h"
 #include "BnProjectile.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
@@ -11,6 +13,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "MotionControllerComponent.h"
 #include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
+#include <Bn\BnInteractive.h>
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -127,6 +130,8 @@ void ABnCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputC
 
 	// Bind fire event
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ABnCharacter::OnFire);
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &ABnCharacter::OnInteractStart);
+	PlayerInputComponent->BindAction("Interact", IE_Released, this, &ABnCharacter::OnInteractStop);
 
 	// Enable touchscreen input
 	EnableTouchscreenMovement(PlayerInputComponent);
@@ -168,6 +173,42 @@ void ABnCharacter::OnFire()
 	}
 }
 
+void ABnCharacter::OnInteractStart()
+{
+	OnServerInteractStart();
+}
+
+void ABnCharacter::OnInteractStop()
+{
+	OnServerInteractStop();
+}
+
+void ABnCharacter::OnServerInteractStart_Implementation()
+{
+	// From DoInteractionTrace in EstCore
+	FVector cameraLocation;
+	FRotator cameraRotation;
+	Controller->GetPlayerViewPoint(cameraLocation, cameraRotation);
+
+	FHitResult hitResult;
+	FCollisionQueryParams traceParams(true);
+	FVector distanceMax = cameraLocation + cameraRotation.Vector() * InteractionDistance;
+	GetWorld()->LineTraceSingleByChannel(hitResult, cameraLocation, distanceMax, ECC_GameTraceChannel2, traceParams);
+	
+	if (hitResult.GetComponent() && hitResult.IsValidBlockingHit())
+	{
+		if (hitResult.GetComponent()->GetClass()->ImplementsInterface(UBnInteractive::StaticClass()))
+		{
+			IBnInteractive::Execute_OnInteractStart(hitResult.GetComponent());
+		}
+	}
+}
+
+bool ABnCharacter::OnServerInteractStart_Validate()
+{
+	return true;
+}
+
 void ABnCharacter::OnServerFire_Implementation()
 {
 	// try and fire a projectile
@@ -200,6 +241,15 @@ void ABnCharacter::OnServerFire_Implementation()
 }
 
 bool ABnCharacter::OnServerFire_Validate()
+{
+	return true;
+}
+
+void ABnCharacter::OnServerInteractStop_Implementation()
+{
+}
+
+bool ABnCharacter::OnServerInteractStop_Validate()
 {
 	return true;
 }

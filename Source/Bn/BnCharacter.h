@@ -91,6 +91,15 @@ protected:
 	UFUNCTION(Server, Reliable, WithValidation)
 	void OnServerFire();
 
+	void OnInteractStart();
+	void OnInteractStop();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void OnServerInteractStart();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void OnServerInteractStop();
+	
 	/** Resets HMD orientation and position in VR. */
 	void OnResetVR();
 
@@ -143,6 +152,9 @@ public:
 	FORCEINLINE class USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+	UPROPERTY(EditDefaultsOnly)
+	float InteractionDistance = 128.0f;
 
 };
 
