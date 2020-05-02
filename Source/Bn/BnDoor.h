@@ -20,19 +20,27 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Visual")
     UStaticMeshComponent* DoorMesh;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay")
 	UBnSwitchComponent* DoorSwitch;
 
+	UFUNCTION()
+	void OnServerToggleDoor();
+
 	UFUNCTION(NetMulticast, Reliable)
-	void OnToggleDoor(bool bIsOpen);
+	void OnToggleDoor();
 
 	UFUNCTION(BlueprintNativeEvent)
 	void ToggleDoor(bool bIsOpen);
+
+	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay")
+	bool IsOpen = false;
+
+	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay")
+	bool IsLocked = false;
+
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

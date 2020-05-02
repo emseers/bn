@@ -9,7 +9,7 @@
 
 #include "BnSwitchComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnToggleSwitch, bool, State);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnToggleSwitch);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BN_API UBnSwitchComponent : public UBoxComponent, public IBnInteractive
@@ -31,11 +31,7 @@ public:
     void OnInteractEnd();
 	EBnInteractionType InteractionType = EBnInteractionType::Toggle;
 
-	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadWrite, Category = "Gameplay")
-	bool IsOpen = false;
 
 	UPROPERTY(BlueprintAssignable, Category="Gameplay")
     FOnToggleSwitch OnToggleSwitch;
-
-	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

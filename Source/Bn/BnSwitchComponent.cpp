@@ -3,7 +3,6 @@
 
 #include "BnSwitchComponent.h"
 
-#include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
 UBnSwitchComponent::UBnSwitchComponent()
@@ -29,12 +28,5 @@ void UBnSwitchComponent::OnInteractEnd_Implementation()
 
 void UBnSwitchComponent::OnInteractStart_Implementation()
 {
-	IsOpen = !IsOpen;
-	OnToggleSwitch.Broadcast(IsOpen);
-}
-
-void UBnSwitchComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(UBnSwitchComponent, IsOpen);
+	OnToggleSwitch.Broadcast();
 }
