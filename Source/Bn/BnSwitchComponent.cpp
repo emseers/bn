@@ -22,6 +22,11 @@ void UBnSwitchComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
+EBnInteractionType UBnSwitchComponent::GetInteractiveType_Implementation()
+{
+	return InteractionType;
+}
+
 void UBnSwitchComponent::OnInteractEnd_Implementation()
 {
 }

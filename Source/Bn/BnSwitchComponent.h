@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "BnInteractionType.h"
 #include "BnInteractive.h"
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
@@ -30,7 +31,8 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     void OnInteractEnd();
 	EBnInteractionType InteractionType = EBnInteractionType::Toggle;
-
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	EBnInteractionType GetInteractiveType();
 
 	UPROPERTY(BlueprintAssignable, Category="Gameplay")
     FOnToggleSwitch OnToggleSwitch;

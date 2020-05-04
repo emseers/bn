@@ -2,18 +2,10 @@
 
 #pragma once
 
+#include "BnInteractionType.h"
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "BnInteractive.generated.h"
-
-UENUM(BlueprintType)
-enum class EBnInteractionType : uint8
-{
-	Momentary,
-	Toggle,
-	Slide,
-	Hold
-};
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
@@ -35,5 +27,6 @@ public:
 	void OnInteractStart();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void OnInteractEnd();
-	EBnInteractionType InteractionType;
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	EBnInteractionType GetInteractiveType();
 };
