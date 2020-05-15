@@ -3,6 +3,7 @@
 #include "BnCharacter.h"
 
 #include "BnInteractive.h"
+#include "BnSlideInteractive.h"
 #include "BnProjectile.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
@@ -13,7 +14,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "MotionControllerComponent.h"
 #include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
-#include <Bn\BnInteractive.h>
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -149,6 +149,8 @@ void ABnCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputC
 	PlayerInputComponent->BindAxis("TurnRate", this, &ABnCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ABnCharacter::LookUpAtRate);
+
+	PlayerInputComponent->BindAxis("MouseWheel", this, &ABnCharacter::MouseWheelTurn);
 }
 
 void ABnCharacter::OnFire()
@@ -175,29 +177,27 @@ void ABnCharacter::OnFire()
 
 void ABnCharacter::OnInteractStart()
 {
+	IsInteractPressed = true;
 	OnServerInteractStart();
 }
 
 void ABnCharacter::OnInteractStop()
 {
+	IsInteractPressed = false;
 	OnServerInteractStop();
 }
 
 void ABnCharacter::OnServerInteractStart_Implementation()
 {
-	// From DoInteractionTrace in EstCore
-	FVector cameraLocation;
-	FRotator cameraRotation;
-	Controller->GetPlayerViewPoint(cameraLocation, cameraRotation);
+	IsInteractPressed = true;
 
 	FHitResult hitResult;
-	FCollisionQueryParams traceParams(true);
-	FVector distanceMax = cameraLocation + cameraRotation.Vector() * InteractionDistance;
-	GetWorld()->LineTraceSingleByChannel(hitResult, cameraLocation, distanceMax, ECC_GameTraceChannel2, traceParams);
-	
-	if (hitResult.GetComponent() && hitResult.IsValidBlockingHit())
+	bool hit = DoInteractionTrace(hitResult);
+
+	if (hit && hitResult.GetComponent()->GetClass()->ImplementsInterface(UBnInteractive::StaticClass()))
 	{
-		if (hitResult.GetComponent()->GetClass()->ImplementsInterface(UBnInteractive::StaticClass()))
+		EBnInteractionType interactType =  IBnInteractive::Execute_GetInteractiveType(hitResult.GetComponent());
+		if (interactType == EBnInteractionType::Hold || interactType == EBnInteractionType::Toggle)
 		{
 			IBnInteractive::Execute_OnInteractStart(hitResult.GetComponent());
 		}
@@ -207,6 +207,47 @@ void ABnCharacter::OnServerInteractStart_Implementation()
 bool ABnCharacter::OnServerInteractStart_Validate()
 {
 	return true;
+}
+
+void ABnCharacter::OnServerSlideInteractStart_Implementation(float rate)
+{
+	if(IsInteractPressed)
+	{
+		FHitResult hitResult;
+		bool hit = DoInteractionTrace(hitResult);
+
+		if (hit && hitResult.GetComponent()->GetClass()->ImplementsInterface(UBnSlideInteractive::StaticClass()))
+		{
+			EBnInteractionType interactType =  IBnSlideInteractive::Execute_GetInteractiveType(hitResult.GetComponent());
+			if (interactType == EBnInteractionType::Slide)
+			{
+				IBnSlideInteractive::Execute_OnInteractStart(hitResult.GetComponent(), rate);
+			}
+		}
+	}
+}
+
+bool ABnCharacter::OnServerSlideInteractStart_Validate(float rate)
+{
+	return true;
+}
+
+bool ABnCharacter::DoInteractionTrace(FHitResult& hitResult)
+{
+	// From DoInteractionTrace in EstCore
+	FVector cameraLocation;
+	FRotator cameraRotation;
+	Controller->GetPlayerViewPoint(cameraLocation, cameraRotation);
+	FCollisionQueryParams traceParams(true);
+	FVector distanceMax = cameraLocation + cameraRotation.Vector() * InteractionDistance;
+	GetWorld()->LineTraceSingleByChannel(hitResult, cameraLocation, distanceMax, ECC_GameTraceChannel2, traceParams);
+
+	if (hitResult.GetComponent() && hitResult.IsValidBlockingHit())
+	{
+		return true;
+	}
+
+	return false;
 }
 
 void ABnCharacter::OnServerFire_Implementation()
@@ -247,6 +288,7 @@ bool ABnCharacter::OnServerFire_Validate()
 
 void ABnCharacter::OnServerInteractStop_Implementation()
 {
+	IsInteractPressed = false;
 }
 
 bool ABnCharacter::OnServerInteractStop_Validate()
@@ -350,6 +392,15 @@ void ABnCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+}
+
+void ABnCharacter::MouseWheelTurn(float Rate)
+{
+	// Mouse wheel axis is either 1 or -1 when scrolling
+	if(IsInteractPressed && (Rate > 0.5f || Rate < -0.5f))
+	{
+		OnServerSlideInteractStart(Rate);
+	}
 }
 
 bool ABnCharacter::EnableTouchscreenMovement(class UInputComponent* PlayerInputComponent)

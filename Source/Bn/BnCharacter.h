@@ -91,6 +91,7 @@ protected:
 	UFUNCTION(Server, Reliable, WithValidation)
 	void OnServerFire();
 
+	bool IsInteractPressed = false;
 	void OnInteractStart();
 	void OnInteractStop();
 
@@ -99,6 +100,11 @@ protected:
 
 	UFUNCTION(Server, Reliable, WithValidation)
 	void OnServerInteractStop();
+
+	bool DoInteractionTrace(struct FHitResult& hitResult);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void OnServerSlideInteractStart(float rate);
 	
 	/** Resets HMD orientation and position in VR. */
 	void OnResetVR();
@@ -120,6 +126,8 @@ protected:
 	 * @param Rate	This is a normalized rate, i.e. 1.0 means 100% of desired turn rate
 	 */
 	void LookUpAtRate(float Rate);
+
+	void MouseWheelTurn(float Rate);
 
 	struct TouchData
 	{
