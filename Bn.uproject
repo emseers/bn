@@ -37,6 +37,10 @@
 		{
 			"Name": "PCGWaterInterop",
 			"Enabled": true
+		},
+		{
+			"Name": "Voxel",
+			"Enabled": true
 		}
 	]
 }
